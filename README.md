@@ -4,7 +4,7 @@ A web-based tool that inspects a suspicious email and explains, in plain languag
 
 Upload a saved `.eml` file or paste an email's raw source. The analyzer parses the headers, checks sender authentication (SPF, DKIM, DMARC), extracts and inspects every link and attachment, scans the content for social engineering tactics, and combines the red flags into a risk score and a verdict: **Benign**, **Suspicious**, or **Malicious**.
 
-**Live demo:** _add your Render link here_
+**Live demo:** [phishing-email-analyzer-xps9.onrender.com](https://phishing-email-analyzer-xps9.onrender.com/)
 
 > The free hosting tier sleeps after inactivity, so the first visit may take about a minute to load.
 
@@ -87,7 +87,7 @@ Findings are shown in order of severity, and each one explains exactly what was 
 ## Project structure
 
 ```
-phishing-analyzer/
+phishing-email-analyzer/
 ├── analyzer.py        # All detection logic: parsing, checks, scoring
 ├── app.py             # Flask web server: serves the page, receives emails, returns JSON
 ├── templates/
