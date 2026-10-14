@@ -1,0 +1,22 @@
+Return-Path: <ceo.jmartin@gmail.com>
+Received: from mail-sor-f41.google.com (mail-sor-f41.google.com [209.85.220.41])
+        by mx.google.com with SMTPS id k4l5m6
+        for <student@example.com>; Wed, 14 Oct 2026 13:30:12 -0400
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@gmail.com;
+       spf=pass smtp.mailfrom=ceo.jmartin@gmail.com;
+       dmarc=pass header.from=gmail.com
+From: "James Martin - CEO" <ceo.jmartin@gmail.com>
+To: student@example.com
+Subject: Quick favor - are you available?
+Date: Wed, 14 Oct 2026 13:30:10 -0400
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+
+Hi,
+
+I'm stuck in a board meeting and need a favor done immediately. Please purchase 5 Apple gift cards ($200 each) for a client appreciation event. Scratch off the backs and send me photos of the codes.
+
+Keep this confidential for now, I'll reimburse you today.
+
+Sent from my iPhone

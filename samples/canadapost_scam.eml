@@ -1,0 +1,23 @@
+Return-Path: <notify@canadapost-redelivery.click>
+Received: from canadapost-redelivery.click (unknown [91.215.85.40])
+        by mx.google.com with SMTP id r5t6y7
+        for <student@example.com>; Wed, 14 Oct 2026 15:45:20 -0400
+Authentication-Results: mx.google.com;
+       spf=pass smtp.mailfrom=notify@canadapost-redelivery.click;
+       dkim=none;
+       dmarc=none
+From: "Canada Post" <notify@canadapost-redelivery.click>
+To: student@example.com
+Subject: Delivery attempt failed - $1.99 redelivery fee required
+Date: Wed, 14 Oct 2026 15:45:18 -0400
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+
+Dear Customer,
+
+We attempted to deliver your package but the address was incomplete. Your parcel will be returned to sender within 48 hours.
+
+To schedule a redelivery, update your payment details and pay the $1.99 fee here:
+https://tinyurl.com/cp-redeliver-2026
+
+Canada Post

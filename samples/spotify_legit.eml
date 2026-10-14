@@ -1,0 +1,37 @@
+Return-Path: <bounces+48211@em.spotify.com>
+Received: from o1.em.spotify.com (o1.em.spotify.com [167.89.25.11])
+        by mx.google.com with ESMTPS id p0o9i8
+        for <student@example.com>; Wed, 14 Oct 2026 14:00:02 -0400
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@em.spotify.com;
+       spf=pass smtp.mailfrom=bounces+48211@em.spotify.com;
+       dmarc=pass header.from=spotify.com
+From: Spotify <no-reply@spotify.com>
+To: student@example.com
+Subject: Your Wrapped is almost here
+Date: Wed, 14 Oct 2026 14:00:00 -0400
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="SPOT"
+
+--SPOT
+Content-Type: text/plain; charset="utf-8"
+
+Hi Student,
+
+Your year in music is almost ready. We'll let you know as soon as it drops.
+
+Listen now: https://open.spotify.com/
+
+Manage notifications: https://www.spotify.com/account/notifications/
+
+--SPOT
+Content-Type: text/html; charset="utf-8"
+
+<html><body>
+<p>Hi Student,</p>
+<p>Your year in music is almost ready. We'll let you know as soon as it drops.</p>
+<p><a href="https://open.spotify.com/">Listen now</a></p>
+<p><a href="https://www.spotify.com/account/notifications/">Manage notifications</a></p>
+</body></html>
+
+--SPOT--

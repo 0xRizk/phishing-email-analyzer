@@ -1,0 +1,43 @@
+Return-Path: <bounce@mailer-xz91.ru>
+Received: from mailer-xz91.ru (unknown [185.234.72.19])
+        by mx.google.com with SMTP id a1b2c3d4
+        for <student@example.com>; Wed, 14 Oct 2026 09:12:44 -0400
+Authentication-Results: mx.google.com;
+       spf=fail (google.com: domain of bounce@mailer-xz91.ru does not designate 185.234.72.19 as permitted sender) smtp.mailfrom=bounce@mailer-xz91.ru;
+       dkim=none;
+       dmarc=fail (p=REJECT) header.from=paypal.com
+From: "PayPal Security" <service@paypa1-secure.com>
+Reply-To: account-review@protonmail-support.net
+To: student@example.com
+Subject: URGENT: Your account has been limited - action required within 24 hours
+Date: Wed, 14 Oct 2026 09:12:40 -0400
+Message-ID: <8f3a9c21@mailer-xz91.ru>
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="BOUNDARY123"
+
+--BOUNDARY123
+Content-Type: text/plain; charset="utf-8"
+
+Dear Customer,
+
+We detected unusual activity on your account. Your account has been temporarily limited.
+
+To restore full access, you must verify your identity within 24 hours or your account will be permanently suspended.
+
+Verify now: http://185.234.72.19/paypal/login.php
+
+Thank you,
+PayPal Security Team
+
+--BOUNDARY123
+Content-Type: text/html; charset="utf-8"
+
+<html><body>
+<p>Dear Customer,</p>
+<p>We detected unusual activity on your account. Your account has been <b>temporarily limited</b>.</p>
+<p>To restore full access, you must verify your identity within <b>24 hours</b> or your account will be permanently suspended.</p>
+<p><a href="http://paypa1-secure.com.verify-login.xyz/signin">https://www.paypal.com/signin</a></p>
+<p>Thank you,<br>PayPal Security Team</p>
+</body></html>
+
+--BOUNDARY123--

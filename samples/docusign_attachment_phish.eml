@@ -1,0 +1,33 @@
+Return-Path: <bounce-1182@mailgun-relay.net>
+Received: from mailgun-relay.net (relay4.mailgun-relay.net [104.130.122.11])
+        by mx.google.com with ESMTPS id z1x2c3
+        for <student@example.com>; Wed, 14 Oct 2026 12:05:44 -0400
+Authentication-Results: mx.google.com;
+       spf=pass smtp.mailfrom=bounce-1182@mailgun-relay.net;
+       dkim=fail header.i=@docusign.net;
+       dmarc=fail (p=QUARANTINE) header.from=docusign.net
+From: "DocuSign" <dse@docusign-review.net>
+Reply-To: hr.department@outlook.com
+To: student@example.com
+Subject: Completed: Please review and sign - Offer_Letter_2026.pdf
+Date: Wed, 14 Oct 2026 12:05:40 -0400
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="DOCSIGN"
+
+--DOCSIGN
+Content-Type: text/plain; charset="utf-8"
+
+Hello,
+
+You have received a document to review and sign. Open the attached secure document and log in to your account to view it.
+
+This document expires today.
+
+DocuSign Electronic Signature Service
+
+--DOCSIGN
+Content-Type: text/html; name="Offer_Letter_2026.html"
+Content-Disposition: attachment; filename="Offer_Letter_2026.html"
+
+<html><body>Fake login page</body></html>
+--DOCSIGN--

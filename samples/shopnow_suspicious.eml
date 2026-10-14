@@ -1,0 +1,24 @@
+Return-Path: <rewards@shopnow-outlet.com>
+Received: from mail.shopnow-outlet.com (mail.shopnow-outlet.com [64.227.18.92])
+        by mx.google.com with ESMTPS id h3j4k5
+        for <student@example.com>; Wed, 14 Oct 2026 16:10:30 -0400
+Authentication-Results: mx.google.com;
+       spf=pass smtp.mailfrom=rewards@shopnow-outlet.com;
+       dkim=none;
+       dmarc=none
+From: "ShopNow Rewards" <rewards@shopnow-outlet.com>
+To: student@example.com
+Subject: Final notice: your $50 reward expires today
+Date: Wed, 14 Oct 2026 16:10:28 -0400
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+
+Dear Customer,
+
+Thanks for being a loyal shopper. You have an unclaimed $50 reward on your account.
+
+This offer expires today, so claim it before midnight:
+https://bit.ly/shopnow-reward50
+
+Happy shopping,
+The ShopNow Team
