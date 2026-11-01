@@ -6,7 +6,7 @@
   <title>Phishing Email Analyzer</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Martian+Mono:wdth,wght@75..112.5,100..800&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg: #060911;
@@ -22,7 +22,8 @@
       --blue: #3b82f6;
       --amber: #f59e0b;
       --red: #ef4444;
-      --mono: "JetBrains Mono", ui-monospace, monospace;
+      --sans: "Archivo", system-ui, sans-serif;
+      --mono: "Martian Mono", ui-monospace, monospace;
     }
     * { box-sizing: border-box; }
     body {
@@ -31,7 +32,7 @@
       display: flex;
       flex-direction: column;
       color: var(--text);
-      font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+      font-family: var(--sans);
       background-color: var(--bg);
       background-image:
         radial-gradient(at 10% 10%, rgba(34, 197, 94, 0.12) 0px, transparent 50%),
@@ -58,7 +59,7 @@
     }
     .logo svg { width: 20px; height: 20px; color: #000; }
     .brand-name {
-      font-size: 20px; font-weight: 800; letter-spacing: -.02em;
+      font-size: 19px; font-weight: 800; font-stretch: 125%; letter-spacing: -.01em;
       background: linear-gradient(to right, #fff, #e2e8f0, #94a3b8);
       -webkit-background-clip: text; background-clip: text; color: transparent;
     }
@@ -85,7 +86,7 @@
     main { width: 100%; max-width: 900px; margin: 0 auto; padding: 48px 16px 64px; flex: 1; }
     .hero { text-align: center; margin-bottom: 40px; }
     .hero h1 {
-      font-size: clamp(34px, 7vw, 60px); font-weight: 800; letter-spacing: -.03em;
+      font-size: clamp(32px, 6.5vw, 56px); font-weight: 900; font-stretch: 125%; letter-spacing: -.02em;
       line-height: 1.08; margin: 0 0 16px;
     }
     .gradient-text {
@@ -121,7 +122,7 @@
     }
     .tab {
       background: transparent; border: 0; border-radius: 9px; cursor: pointer;
-      padding: 8px 16px; font: 600 13px "Plus Jakarta Sans", sans-serif; color: var(--muted);
+      padding: 8px 16px; font: 600 13px var(--sans); color: var(--muted);
       transition: all .2s;
     }
     .tab:hover { color: var(--text); }
@@ -145,12 +146,12 @@
       width: 100%; min-height: 220px; resize: vertical;
       background: var(--input); color: var(--text);
       border: 1px solid rgba(51,65,85,.6); border-radius: 12px;
-      padding: 16px; font: 13px/1.6 var(--mono);
+      padding: 16px; font: 12px/1.7 var(--mono); font-stretch: 87.5%;
       transition: all .2s;
     }
     textarea::placeholder { color: var(--dim); }
     textarea:focus { outline: none; border-color: var(--green); box-shadow: 0 0 0 1px var(--green); }
-    .hint { font-size: 12px; color: var(--dim); margin: 10px 0 0; font-family: var(--mono); }
+    .hint { font-size: 11px; color: var(--dim); margin: 10px 0 0; font-family: var(--mono); }
 
     /* Glow button */
     .glow-button {
@@ -158,7 +159,7 @@
       display: flex; align-items: center; justify-content: center; gap: 12px;
       background: linear-gradient(to right, var(--green), var(--green-dark));
       color: #000; border: 0; border-radius: 12px; cursor: pointer;
-      padding: 16px 24px; font: 800 14px "Plus Jakarta Sans", sans-serif;
+      padding: 16px 24px; font: 800 14px var(--sans); font-stretch: 112%; letter-spacing: .02em;
       text-transform: uppercase; letter-spacing: .08em;
       transition: all .3s cubic-bezier(.4,0,.2,1);
       isolation: isolate;
@@ -195,21 +196,23 @@
     /* ---------- Results ---------- */
     #results { display: none; }
     .verdict-card { text-align: center; }
-    .verdict-label { font: 12px var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: .1em; }
+    .verdict-label { font: 11px var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: .1em; }
     .verdict {
       display: inline-block; margin: 12px 0 8px;
-      font-size: clamp(30px, 6vw, 44px); font-weight: 800; letter-spacing: -.02em; text-transform: uppercase;
+      font-size: clamp(28px, 6vw, 42px); font-weight: 900; font-stretch: 125%; letter-spacing: -.01em; text-transform: uppercase;
     }
     .verdict.benign { color: var(--green); text-shadow: 0 0 30px rgba(34,197,94,.35); }
-    .verdict.suspicious { color: var(--amber); text-shadow: 0 0 30px rgba(245,158,11,.35); }
+    .verdict.low-suspicion { color: #eab308; text-shadow: 0 0 30px rgba(234,179,8,.35); }
+    .verdict.high-suspicion { color: #f97316; text-shadow: 0 0 30px rgba(249,115,22,.35); }
     .verdict.malicious { color: var(--red); text-shadow: 0 0 30px rgba(239,68,68,.4); }
-    .score { font: 14px var(--mono); color: var(--muted); }
+    .verdict-desc { font-size: 15px; color: var(--muted); margin-bottom: 6px; }
+    .score { font: 12px var(--mono); color: var(--muted); }
     .bar { height: 8px; background: rgba(255,255,255,.06); border-radius: 99px; margin-top: 20px; overflow: hidden; }
     .bar > div { height: 100%; width: 0; border-radius: 99px; transition: width .6s ease; }
 
     h2 {
       display: flex; align-items: center; gap: 10px;
-      font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .1em;
+      font-size: 12px; font-weight: 700; font-stretch: 125%; text-transform: uppercase; letter-spacing: .08em;
       color: #cbd5e1; margin: 0 0 18px;
     }
     h2::before { content: ""; width: 6px; height: 6px; border-radius: 2px; background: var(--green); }
@@ -218,23 +221,42 @@
     td { padding: 10px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
     tr:last-child td { border-bottom: 0; }
     td:first-child { color: var(--muted); width: 120px; padding-right: 12px; font-weight: 500; }
-    td:last-child { font: 13px var(--mono); word-break: break-all; }
+    td:last-child { font: 12px var(--mono); font-stretch: 87.5%; word-break: break-all; }
 
-    .finding {
-      border: 1px solid var(--line); border-left: 3px solid var(--blue);
-      background: rgba(255,255,255,.03); border-radius: 10px;
-      padding: 12px 16px; margin-bottom: 10px;
+    /* Findings: a score sheet grouped by check area, one ruled row per finding. */
+    .fgroup + .fgroup { margin-top: 28px; }
+    .fgroup-head {
+      display: flex; justify-content: space-between; gap: 12px;
+      font: 500 10px var(--mono); text-transform: uppercase; letter-spacing: .08em;
+      color: var(--dim); padding-bottom: 8px; border-bottom: 1px solid var(--line-strong);
     }
-    .finding.high { border-left-color: var(--red); }
-    .finding.medium { border-left-color: var(--amber); }
-    .finding .top { display: flex; justify-content: space-between; gap: 12px; }
-    .finding .title { font-weight: 600; }
-    .finding .pts { font: 12px var(--mono); color: var(--muted); white-space: nowrap; }
-    .finding .detail { color: var(--muted); font-size: 14px; margin-top: 2px; }
+    .fgroup-head .name { color: #cbd5e1; }
+    .frow {
+      display: grid; grid-template-columns: 56px 1fr auto; column-gap: 16px;
+      padding: 12px 0; border-bottom: 1px solid var(--line);
+    }
+    .frow .sev { grid-column: 1; grid-row: 1; font: 600 10px var(--mono); letter-spacing: .04em; padding-top: 3px; color: var(--dim); }
+    .frow .sev.high { color: var(--red); }
+    .frow .sev.medium { color: var(--amber); }
+    .frow .ftitle { grid-column: 2; grid-row: 1; font-weight: 650; font-size: 15px; font-stretch: 106%; }
+    .frow .fpts { grid-column: 3; grid-row: 1; font: 12px var(--mono); color: var(--text); text-align: right; padding-top: 2px; }
+    .frow .fdetail { grid-column: 2; grid-row: 2; color: var(--muted); font-size: 14px; line-height: 1.55; margin-top: 3px; }
+    .ftotal {
+      display: flex; justify-content: space-between; gap: 12px; margin-top: 18px; padding-top: 12px;
+      border-top: 1px solid var(--line-strong); font: 12px var(--mono); color: var(--muted);
+    }
+    .ftotal strong { color: var(--text); font-weight: 500; }
+    @media (max-width: 520px) {
+      .frow { grid-template-columns: 1fr auto; }
+      .frow .sev { grid-column: 1; grid-row: 1; }
+      .frow .fpts { grid-column: 2; grid-row: 1; }
+      .frow .ftitle { grid-column: 1 / -1; grid-row: 2; margin-top: 4px; }
+      .frow .fdetail { grid-column: 1 / -1; grid-row: 3; }
+    }
 
     ul.links { list-style: none; padding: 0; margin: 0; }
     ul.links li {
-      font: 13px var(--mono); word-break: break-all; color: #cbd5e1;
+      font: 12px var(--mono); font-stretch: 87.5%; word-break: break-all; color: #cbd5e1;
       padding: 10px 0; border-bottom: 1px solid var(--line);
     }
     ul.links li:last-child { border-bottom: 0; }
@@ -328,6 +350,7 @@
       <div class="glass verdict-card">
         <div class="verdict-label">Verdict</div>
         <div class="verdict" id="verdict"></div>
+        <div class="verdict-desc" id="verdictDesc"></div>
         <div class="score" id="score"></div>
         <div class="bar"><div id="barFill"></div></div>
       </div>
@@ -438,13 +461,15 @@
     function render(r) {
       const verdict = (r.verdict || "benign").toLowerCase();
       const colors = {
-        benign: "linear-gradient(90deg, #22c55e, #34d399)",
-        suspicious: "linear-gradient(90deg, #f59e0b, #fbbf24)",
-        malicious: "linear-gradient(90deg, #ef4444, #f97316)",
+        "benign": "linear-gradient(90deg, #22c55e, #34d399)",
+        "low-suspicion": "linear-gradient(90deg, #eab308, #facc15)",
+        "high-suspicion": "linear-gradient(90deg, #f97316, #fb923c)",
+        "malicious": "linear-gradient(90deg, #ef4444, #dc2626)",
       };
 
-      $("verdict").textContent = verdict;
-      $("verdict").className = "verdict " + verdict;
+      $("verdict").textContent = r.classification || verdict;
+      $("verdict").className = "verdict " + (colors[verdict] ? verdict : "benign");
+      $("verdictDesc").textContent = r.description || "";
       $("score").textContent = "Risk score: " + (r.score ?? 0) + " / 100";
       $("barFill").style.width = "0";
       $("barFill").style.background = colors[verdict] || colors.benign;
@@ -463,24 +488,60 @@
       if (!r.findings || !r.findings.length) {
         findings.innerHTML = '<p class="empty">No red flags found.</p>';
       } else {
-        r.findings.forEach((f) => {
-          const box = document.createElement("div");
-          box.className = "finding " + (f.severity || "low");
-          const top = document.createElement("div");
-          top.className = "top";
-          const title = document.createElement("div");
-          title.className = "title";
-          title.textContent = f.title;
-          const pts = document.createElement("span");
-          pts.className = "pts";
-          pts.textContent = "+" + (f.points ?? 0) + " pts";
-          top.append(title, pts);
-          const detail = document.createElement("div");
-          detail.className = "detail";
-          detail.textContent = f.detail || "";
-          box.append(top, detail);
-          findings.append(box);
+        // Small helper: make an element with a class and plain-text content.
+        const el = (tag, cls, text) => {
+          const node = document.createElement(tag);
+          if (cls) node.className = cls;
+          if (text !== undefined) node.textContent = text;
+          return node;
+        };
+        const groupNames = {
+          sender: "Sender", authentication: "Authentication", content: "Content",
+          links: "Links", attachments: "Attachments",
+        };
+        const sevLabels = { high: "HIGH", medium: "MED", low: "LOW" };
+
+        // Group findings by check area, in the same order the analyzer runs them.
+        // (They arrive sorted by severity, so each group stays sorted too.)
+        const order = Object.keys(groupNames);
+        r.findings.forEach((f) => { if (!order.includes(f.category)) order.push(f.category); });
+
+        let total = 0;
+        order.forEach((cat) => {
+          const items = r.findings.filter((f) => f.category === cat);
+          if (!items.length) return;
+          const subtotal = items.reduce((sum, f) => sum + (f.points ?? 0), 0);
+          total += subtotal;
+
+          const group = el("section", "fgroup");
+          const head = el("div", "fgroup-head");
+          head.append(
+            el("span", "name", groupNames[cat] || cat),
+            el("span", "", items.length + (items.length === 1 ? " finding" : " findings") + " · " + subtotal + " pts")
+          );
+          group.append(head);
+
+          items.forEach((f) => {
+            const sev = ["high", "medium", "low"].includes(f.severity) ? f.severity : "low";
+            const row = el("div", "frow");
+            row.append(
+              el("span", "sev " + sev, sevLabels[sev]),
+              el("div", "ftitle", f.title),
+              el("span", "fpts", "+" + (f.points ?? 0)),
+              el("div", "fdetail", f.detail || "")
+            );
+            group.append(row);
+          });
+          findings.append(group);
         });
+
+        // Total line: the points can add up past 100, but the score is capped.
+        const totalRow = el("div", "ftotal");
+        const right = el("span");
+        right.append(el("strong", "", total + " pts"));
+        if (total > 100) right.append(document.createTextNode(" → score capped at 100"));
+        totalRow.append(el("span", "", "Total"), right);
+        findings.append(totalRow);
       }
 
       const links = $("links");
