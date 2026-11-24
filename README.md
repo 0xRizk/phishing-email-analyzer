@@ -9,7 +9,7 @@ You can upload a saved `.eml` file or paste the email's raw source. The analyzer
 > The free hosting tier sleeps after inactivity, so the first visit may take about a minute to load.
 
 <p align="center">
-  <img src="PhishingAnalysis.png" alt="Phish Analyzer showing a Malicious verdict" width="500">
+  <img src="PhishingAnalysis.png" alt="Phish Analyzer showing a Malicious verdict" width="600">
 </p>
 
 ## Verdicts
