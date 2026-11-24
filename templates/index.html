@@ -6,7 +6,7 @@
   <title>Phishing Email Analyzer</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Martian+Mono:wdth,wght@75..112.5,100..800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg: #060911;
@@ -22,8 +22,8 @@
       --blue: #3b82f6;
       --amber: #f59e0b;
       --red: #ef4444;
-      --sans: "Archivo", system-ui, sans-serif;
-      --mono: "Martian Mono", ui-monospace, monospace;
+      --sans: "Rajdhani", system-ui, sans-serif;
+      --mono: "Share Tech Mono", ui-monospace, monospace;
     }
     * { box-sizing: border-box; }
     body {
@@ -33,6 +33,8 @@
       flex-direction: column;
       color: var(--text);
       font-family: var(--sans);
+      font-weight: 500;
+      font-size: 17px;
       background-color: var(--bg);
       background-image:
         radial-gradient(at 10% 10%, rgba(34, 197, 94, 0.12) 0px, transparent 50%),
@@ -41,6 +43,18 @@
       background-attachment: fixed;
       overflow-x: hidden;
     }
+    /* Moving grid: a faint green grid that slowly drifts, fading out toward the edges. */
+    body::before {
+      content: ""; position: fixed; inset: -60px; z-index: -1; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(34, 197, 94, 0.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(34, 197, 94, 0.07) 1px, transparent 1px);
+      background-size: 60px 60px;
+      -webkit-mask-image: radial-gradient(ellipse at 50% 35%, #000 20%, transparent 75%);
+      mask-image: radial-gradient(ellipse at 50% 35%, #000 20%, transparent 75%);
+      animation: grid-drift 12s linear infinite;
+    }
+    @keyframes grid-drift { to { transform: translate(60px, 60px); } }
     ::selection { background: var(--green); color: #000; }
     code { font-family: var(--mono); font-size: .9em; color: var(--green); }
 
@@ -59,13 +73,13 @@
     }
     .logo svg { width: 20px; height: 20px; color: #000; }
     .brand-name {
-      font-size: 19px; font-weight: 800; font-stretch: 125%; letter-spacing: -.01em;
+      font-size: 22px; font-weight: 700; letter-spacing: .02em;
       background: linear-gradient(to right, #fff, #e2e8f0, #94a3b8);
       -webkit-background-clip: text; background-clip: text; color: transparent;
     }
     .tag {
       margin-left: 6px; padding: 2px 8px; border-radius: 999px;
-      font: 500 11px var(--mono); color: var(--green);
+      font: 400 11px var(--mono); color: var(--green);
       background: rgba(34,197,94,.1); border: 1px solid rgba(34,197,94,.2);
     }
     .byline { font: 12px var(--mono); color: var(--dim); margin-top: 2px; }
@@ -73,7 +87,7 @@
     .byline a:hover { color: var(--green); }
     .gh-button {
       display: inline-flex; align-items: center; gap: 8px;
-      font: 500 12px var(--mono); color: var(--muted); text-decoration: none;
+      font: 400 12px var(--mono); color: var(--muted); text-decoration: none;
       background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.08);
       padding: 8px 14px; border-radius: 999px;
       transition: all .2s;
@@ -86,14 +100,40 @@
     main { width: 100%; max-width: 900px; margin: 0 auto; padding: 48px 16px 64px; flex: 1; }
     .hero { text-align: center; margin-bottom: 40px; }
     .hero h1 {
-      font-size: clamp(32px, 6.5vw, 56px); font-weight: 900; font-stretch: 125%; letter-spacing: -.02em;
-      line-height: 1.08; margin: 0 0 16px;
+      font-size: clamp(38px, 7.5vw, 66px); font-weight: 700; letter-spacing: .01em;
+      line-height: 1.02; margin: 0 0 16px;
+      filter: drop-shadow(0 0 18px rgba(34, 197, 94, 0.25));
+    }
+    .hero p { color: var(--muted); font-size: clamp(16px, 2vw, 19px); font-weight: 500; max-width: 580px; margin: 0 auto; }
+
+    /* Title shine: a light band sweeps left to right, then back right to left.
+       Each line keeps its own base color; the band is a second layer on top. */
+    .title-top, .gradient-text {
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+      background-size: 250% 100%, 100% 100%;
+      background-repeat: no-repeat;
+      animation: shine 3.5s ease-in-out infinite alternate;
+    }
+    .title-top {
+      background-image:
+        linear-gradient(105deg, transparent 44%, rgba(167, 243, 208, 0.95) 50%, transparent 56%),
+        linear-gradient(#ffffff, #ffffff);
     }
     .gradient-text {
-      background: linear-gradient(to right, var(--green), #34d399, #22d3ee);
-      -webkit-background-clip: text; background-clip: text; color: transparent;
+      background-image:
+        linear-gradient(105deg, transparent 44%, rgba(255, 255, 255, 0.95) 50%, transparent 56%),
+        linear-gradient(to right, var(--green), #34d399, #22d3ee);
     }
-    .hero p { color: var(--muted); font-size: clamp(15px, 2vw, 18px); font-weight: 300; max-width: 580px; margin: 0 auto; }
+    @keyframes shine {
+      from { background-position: 100% 0, 0 0; }
+      to   { background-position: 0% 0, 0 0; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .title-top, .gradient-text { animation: none; background-position: 100% 0, 0 0; }
+      body::before, .glow-button::after, .verdict.glitch, .verdict.typing::after { animation: none !important; }
+      .reveal { animation: none !important; opacity: 1 !important; }
+      .bar > div { transition: none !important; }
+    }
 
     /* ---------- Glass cards ---------- */
     .glass {
@@ -111,7 +151,7 @@
 
     .label {
       display: block; margin-bottom: 10px;
-      font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em;
+      font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em;
       color: #cbd5e1;
     }
 
@@ -122,7 +162,7 @@
     }
     .tab {
       background: transparent; border: 0; border-radius: 9px; cursor: pointer;
-      padding: 8px 16px; font: 600 13px var(--sans); color: var(--muted);
+      padding: 8px 16px; font: 600 15px var(--sans); color: var(--muted);
       transition: all .2s;
     }
     .tab:hover { color: var(--text); }
@@ -139,19 +179,19 @@
     }
     .dropzone:hover, .dropzone.drag { border-color: var(--green); box-shadow: 0 0 0 1px var(--green); }
     .dropzone svg { width: 32px; height: 32px; color: var(--green); margin-bottom: 8px; }
-    .dropzone strong { color: var(--text); font-weight: 600; }
+    .dropzone strong { color: var(--text); font-weight: 700; }
     #fileName { margin-top: 10px; font: 13px var(--mono); color: var(--green); }
 
     textarea {
       width: 100%; min-height: 220px; resize: vertical;
       background: var(--input); color: var(--text);
       border: 1px solid rgba(51,65,85,.6); border-radius: 12px;
-      padding: 16px; font: 12px/1.7 var(--mono); font-stretch: 87.5%;
+      padding: 16px; font: 13px/1.7 var(--mono);
       transition: all .2s;
     }
     textarea::placeholder { color: var(--dim); }
     textarea:focus { outline: none; border-color: var(--green); box-shadow: 0 0 0 1px var(--green); }
-    .hint { font-size: 11px; color: var(--dim); margin: 10px 0 0; font-family: var(--mono); }
+    .hint { font-size: 12px; color: var(--dim); margin: 10px 0 0; font-family: var(--mono); }
 
     /* Glow button */
     .glow-button {
@@ -159,8 +199,8 @@
       display: flex; align-items: center; justify-content: center; gap: 12px;
       background: linear-gradient(to right, var(--green), var(--green-dark));
       color: #000; border: 0; border-radius: 12px; cursor: pointer;
-      padding: 16px 24px; font: 800 14px var(--sans); font-stretch: 112%; letter-spacing: .02em;
-      text-transform: uppercase; letter-spacing: .08em;
+      padding: 16px 24px; font: 700 17px var(--sans);
+      text-transform: uppercase; letter-spacing: .12em;
       transition: all .3s cubic-bezier(.4,0,.2,1);
       isolation: isolate;
     }
@@ -169,12 +209,15 @@
       background: linear-gradient(90deg, var(--green), var(--blue));
       filter: blur(12px); opacity: 0; transition: opacity .3s;
     }
-    .glow-button:hover::after { opacity: .6; }
+    /* Pulses softly until the first analysis, then only glows on hover. */
+    .glow-button:not(.used)::after { animation: btn-pulse 2.4s ease-in-out infinite; }
+    @keyframes btn-pulse { 0%, 100% { opacity: 0; } 50% { opacity: .45; } }
+    .glow-button:hover::after { opacity: .6; animation: none; }
     .glow-button svg { width: 16px; height: 16px; }
     .glow-button:disabled { opacity: .6; cursor: wait; }
 
     .error {
-      display: none; margin-top: 20px; padding: 14px 16px; border-radius: 12px; font-size: 14px;
+      display: none; margin-top: 20px; padding: 14px 16px; border-radius: 12px; font-size: 15px;
       color: #f87171; background: rgba(239,68,68,.1); border: 1px solid rgba(239,68,68,.3);
     }
 
@@ -190,44 +233,70 @@
     .spinner::before { border: 2px solid rgba(34,197,94,.2); }
     .spinner::after { border-top: 2px solid var(--green); animation: spin 1s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
-    #overlay .big { font-weight: 600; font-size: 18px; letter-spacing: .02em; margin: 0; }
+    #overlay .big { font-weight: 700; font-size: 21px; letter-spacing: .04em; margin: 0; }
     #overlay .small { font: 12px var(--mono); color: var(--muted); margin: 4px 0 0; }
 
     /* ---------- Results ---------- */
     #results { display: none; }
     .verdict-card { text-align: center; }
-    .verdict-label { font: 11px var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: .1em; }
+    .verdict-label { font: 12px var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: .1em; }
     .verdict {
       display: inline-block; margin: 12px 0 8px;
-      font-size: clamp(28px, 6vw, 42px); font-weight: 900; font-stretch: 125%; letter-spacing: -.01em; text-transform: uppercase;
+      font-size: clamp(32px, 7vw, 50px); font-weight: 700; letter-spacing: .03em; text-transform: uppercase;
     }
     .verdict.benign { color: var(--green); text-shadow: 0 0 30px rgba(34,197,94,.35); }
     .verdict.low-suspicion { color: #eab308; text-shadow: 0 0 30px rgba(234,179,8,.35); }
     .verdict.high-suspicion { color: #f97316; text-shadow: 0 0 30px rgba(249,115,22,.35); }
     .verdict.malicious { color: var(--red); text-shadow: 0 0 30px rgba(239,68,68,.4); }
-    .verdict-desc { font-size: 15px; color: var(--muted); margin-bottom: 6px; }
-    .score { font: 12px var(--mono); color: var(--muted); }
+
+    /* Typewriter cursor while the verdict types itself out. */
+    .verdict.typing::after {
+      content: ""; display: inline-block; width: .08em; height: .8em; margin-left: .08em;
+      background: currentColor; vertical-align: -.05em;
+      animation: blink .6s steps(1) infinite;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    /* Red glitch flicker, only on a Malicious verdict. */
+    .verdict.glitch { animation: glitch .45s steps(2) 3; }
+    @keyframes glitch {
+      0%   { transform: translate(0); text-shadow: 0 0 30px rgba(239,68,68,.4); }
+      20%  { transform: translate(-3px, 1px); text-shadow: 3px 0 #22d3ee, -3px 0 #ef4444; }
+      40%  { transform: translate(3px, -1px); text-shadow: -3px 0 #22d3ee, 3px 0 #ef4444; opacity: .75; }
+      60%  { transform: translate(-1px, 0); text-shadow: 2px 0 #22d3ee, -2px 0 #ef4444; }
+      80%  { transform: translate(2px, 1px); text-shadow: -2px 0 #22d3ee, 2px 0 #ef4444; opacity: .9; }
+      100% { transform: translate(0); text-shadow: 0 0 30px rgba(239,68,68,.4); }
+    }
+
+    /* Findings and links fade in one after another. */
+    .reveal { opacity: 0; animation: reveal .4s ease-out forwards; }
+    @keyframes reveal {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: none; }
+    }
+    .verdict-desc { font-size: 17px; color: var(--muted); margin-bottom: 6px; }
+    .score { font: 13px var(--mono); color: var(--muted); }
     .bar { height: 8px; background: rgba(255,255,255,.06); border-radius: 99px; margin-top: 20px; overflow: hidden; }
-    .bar > div { height: 100%; width: 0; border-radius: 99px; transition: width .6s ease; }
+    .bar > div { height: 100%; width: 0; border-radius: 99px; transition: width 1.2s cubic-bezier(.33, 1, .68, 1); }
 
     h2 {
       display: flex; align-items: center; gap: 10px;
-      font-size: 12px; font-weight: 700; font-stretch: 125%; text-transform: uppercase; letter-spacing: .08em;
+      font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: .12em;
       color: #cbd5e1; margin: 0 0 18px;
     }
     h2::before { content: ""; width: 6px; height: 6px; border-radius: 2px; background: var(--green); }
 
-    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    table { width: 100%; border-collapse: collapse; font-size: 16px; }
     td { padding: 10px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
     tr:last-child td { border-bottom: 0; }
-    td:first-child { color: var(--muted); width: 120px; padding-right: 12px; font-weight: 500; }
-    td:last-child { font: 12px var(--mono); font-stretch: 87.5%; word-break: break-all; }
+    td:first-child { color: var(--muted); width: 120px; padding-right: 12px; font-weight: 600; }
+    td:last-child { font: 13px var(--mono); word-break: break-all; }
 
     /* Findings: a score sheet grouped by check area, one ruled row per finding. */
     .fgroup + .fgroup { margin-top: 28px; }
     .fgroup-head {
       display: flex; justify-content: space-between; gap: 12px;
-      font: 500 10px var(--mono); text-transform: uppercase; letter-spacing: .08em;
+      font: 400 11px var(--mono); text-transform: uppercase; letter-spacing: .08em;
       color: var(--dim); padding-bottom: 8px; border-bottom: 1px solid var(--line-strong);
     }
     .fgroup-head .name { color: #cbd5e1; }
@@ -235,17 +304,17 @@
       display: grid; grid-template-columns: 56px 1fr auto; column-gap: 16px;
       padding: 12px 0; border-bottom: 1px solid var(--line);
     }
-    .frow .sev { grid-column: 1; grid-row: 1; font: 600 10px var(--mono); letter-spacing: .04em; padding-top: 3px; color: var(--dim); }
+    .frow .sev { grid-column: 1; grid-row: 1; font: 400 11px var(--mono); letter-spacing: .06em; padding-top: 4px; color: var(--dim); }
     .frow .sev.high { color: var(--red); }
     .frow .sev.medium { color: var(--amber); }
-    .frow .ftitle { grid-column: 2; grid-row: 1; font-weight: 650; font-size: 15px; font-stretch: 106%; }
-    .frow .fpts { grid-column: 3; grid-row: 1; font: 12px var(--mono); color: var(--text); text-align: right; padding-top: 2px; }
-    .frow .fdetail { grid-column: 2; grid-row: 2; color: var(--muted); font-size: 14px; line-height: 1.55; margin-top: 3px; }
+    .frow .ftitle { grid-column: 2; grid-row: 1; font-weight: 700; font-size: 17px; }
+    .frow .fpts { grid-column: 3; grid-row: 1; font: 13px var(--mono); color: var(--text); text-align: right; padding-top: 3px; }
+    .frow .fdetail { grid-column: 2; grid-row: 2; color: var(--muted); font-size: 16px; line-height: 1.45; margin-top: 3px; }
     .ftotal {
       display: flex; justify-content: space-between; gap: 12px; margin-top: 18px; padding-top: 12px;
-      border-top: 1px solid var(--line-strong); font: 12px var(--mono); color: var(--muted);
+      border-top: 1px solid var(--line-strong); font: 13px var(--mono); color: var(--muted);
     }
-    .ftotal strong { color: var(--text); font-weight: 500; }
+    .ftotal strong { color: var(--text); font-weight: 400; }
     @media (max-width: 520px) {
       .frow { grid-template-columns: 1fr auto; }
       .frow .sev { grid-column: 1; grid-row: 1; }
@@ -256,24 +325,24 @@
 
     ul.links { list-style: none; padding: 0; margin: 0; }
     ul.links li {
-      font: 12px var(--mono); font-stretch: 87.5%; word-break: break-all; color: #cbd5e1;
+      font: 13px var(--mono); word-break: break-all; color: #cbd5e1;
       padding: 10px 0; border-bottom: 1px solid var(--line);
     }
     ul.links li:last-child { border-bottom: 0; }
-    .empty { color: var(--dim); font-size: 14px; margin: 0; }
+    .empty { color: var(--dim); font-size: 16px; margin: 0; }
 
     footer {
       border-top: 1px solid rgba(255,255,255,.05);
-      padding: 28px 16px; text-align: center; font-size: 12px; color: var(--dim);
+      padding: 28px 16px; text-align: center; font-size: 13px; color: var(--dim);
     }
     footer p { margin: 0; }
-    .credit { font-size: 14px; color: var(--muted); }
+    .credit { font-size: 16px; color: var(--muted); }
     .credit strong { color: var(--text); font-weight: 700; }
     .socials { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin: 14px 0; }
     .socials a {
       display: inline-flex; align-items: center; gap: 7px;
       padding: 7px 14px; border-radius: 999px;
-      font: 500 12px var(--mono); color: var(--muted); text-decoration: none;
+      font: 400 12px var(--mono); color: var(--muted); text-decoration: none;
       background: rgba(255,255,255,.04); border: 1px solid var(--line);
       transition: all .2s;
     }
@@ -291,7 +360,7 @@
       <div>
         <div>
           <span class="brand-name">Phish Analyzer</span>
-          <span class="tag">v1.0</span>
+          <span class="tag">v1.3</span>
         </div>
         <div class="byline">by <a href="https://www.linkedin.com/in/rizk-hyatt-a740a4317/" target="_blank" rel="noopener noreferrer">Rizk Hyatt</a></div>
       </div>
@@ -304,7 +373,7 @@
 
   <main>
     <div class="hero">
-      <h1>Phishing Email<br><span class="gradient-text">Threat Analyzer</span></h1>
+      <h1><span class="title-top">Phishing Email</span><br><span class="gradient-text">Threat Analyzer</span></h1>
       <p>Upload a saved <code>.eml</code> file or paste an email's raw source. The analyzer inspects headers, sender authentication, and links, then scores the red flags.</p>
     </div>
 
@@ -442,6 +511,7 @@
       }
 
       $("submit").disabled = true;
+      $("submit").classList.add("used"); // stop the idle pulse
       $("overlay").classList.add("show");
       try {
         const res = await fetch("/analyze", { method: "POST", body: data });
@@ -456,9 +526,57 @@
       }
     });
 
+    // ---------- Result animations ----------
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let runId = 0; // bumps on every analysis so an old animation stops if a new one starts
+
+    // Types the verdict out letter by letter, then glitches if it's malicious.
+    function typeVerdict(text, isMalicious, id) {
+      const v = $("verdict");
+      v.classList.remove("glitch");
+      if (reduceMotion) { v.textContent = text; return; }
+      v.textContent = "";
+      v.classList.add("typing");
+      let i = 0;
+      const step = () => {
+        if (id !== runId) return;
+        v.textContent = text.slice(0, ++i);
+        if (i < text.length) return setTimeout(step, 55);
+        setTimeout(() => {
+          if (id !== runId) return;
+          v.classList.remove("typing");
+          if (isMalicious) v.classList.add("glitch");
+        }, 350);
+      };
+      setTimeout(step, 150);
+    }
+
+    // Counts the score up from 0, in step with the bar filling.
+    function countScore(target, id) {
+      const out = (n) => { $("score").textContent = "Risk score: " + n + " / 100"; };
+      if (reduceMotion || target <= 0) return out(target);
+      const start = performance.now(), duration = 1200;
+      const tick = (now) => {
+        if (id !== runId) return;
+        const t = Math.min((now - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - t, 3); // ease-out, same curve as the bar
+        out(Math.round(target * eased));
+        if (t < 1) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    }
+
     // Everything from the email is inserted with textContent, never innerHTML,
     // so a malicious email can't inject script into this page (XSS).
     function render(r) {
+      const id = ++runId;
+      let delay = 0; // stagger for the cascading findings and links
+      const cascade = (node) => {
+        node.classList.add("reveal");
+        node.style.animationDelay = Math.min(delay, 1500) + "ms";
+        delay += 60;
+        return node;
+      };
       const verdict = (r.verdict || "benign").toLowerCase();
       const colors = {
         "benign": "linear-gradient(90deg, #22c55e, #34d399)",
@@ -467,13 +585,17 @@
         "malicious": "linear-gradient(90deg, #ef4444, #dc2626)",
       };
 
-      $("verdict").textContent = r.classification || verdict;
+      const score = Math.min(r.score ?? 0, 100);
       $("verdict").className = "verdict " + (colors[verdict] ? verdict : "benign");
+      typeVerdict(r.classification || verdict, verdict === "malicious", id);
       $("verdictDesc").textContent = r.description || "";
-      $("score").textContent = "Risk score: " + (r.score ?? 0) + " / 100";
+      $("barFill").style.transition = "none";
       $("barFill").style.width = "0";
       $("barFill").style.background = colors[verdict] || colors.benign;
-      requestAnimationFrame(() => { $("barFill").style.width = Math.min(r.score ?? 0, 100) + "%"; });
+      void $("barFill").offsetWidth; // restart the bar from 0 on every run
+      $("barFill").style.transition = "";
+      requestAnimationFrame(() => { $("barFill").style.width = score + "%"; });
+      countScore(score, id);
 
       const headers = $("headers");
       headers.replaceChildren();
@@ -519,7 +641,7 @@
             el("span", "name", groupNames[cat] || cat),
             el("span", "", items.length + (items.length === 1 ? " finding" : " findings") + " · " + subtotal + " pts")
           );
-          group.append(head);
+          group.append(cascade(head));
 
           items.forEach((f) => {
             const sev = ["high", "medium", "low"].includes(f.severity) ? f.severity : "low";
@@ -530,7 +652,7 @@
               el("span", "fpts", "+" + (f.points ?? 0)),
               el("div", "fdetail", f.detail || "")
             );
-            group.append(row);
+            group.append(cascade(row));
           });
           findings.append(group);
         });
@@ -541,7 +663,7 @@
         right.append(el("strong", "", total + " pts"));
         if (total > 100) right.append(document.createTextNode(" → score capped at 100"));
         totalRow.append(el("span", "", "Total"), right);
-        findings.append(totalRow);
+        findings.append(cascade(totalRow));
       }
 
       const links = $("links");
@@ -552,7 +674,7 @@
         r.links.forEach((url) => {
           const li = document.createElement("li");
           li.textContent = url; // shown as text, not clickable, on purpose
-          links.append(li);
+          links.append(cascade(li));
         });
       }
 
