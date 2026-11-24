@@ -1,183 +1,123 @@
 # Phishing Email Analyzer
 
-A web-based tool that inspects a suspicious email and explains, in plain language, whether it looks like phishing and why.
+Drop in a suspicious email and this tool tells you whether it looks like phishing, and more importantly, *why*.
 
-Upload a saved `.eml` file or paste an email's raw source. The analyzer parses the headers, checks sender authentication (SPF, DKIM, DMARC), extracts and inspects every link and attachment, scans the content for social engineering tactics, and combines the red flags into a risk score and one of four verdicts: **Benign**, **Low Suspicion**, **High Suspicion**, or **Malicious**.
+You can upload a saved `.eml` file or paste the email's raw source. The analyzer goes through it the way a SOC analyst would: who really sent it, whether it passes email authentication, where the links actually go, what's attached, and how the message is trying to pressure you. Every red flag adds points, and the total decides the verdict: **Benign**, **Low Suspicion**, **High Suspicion**, or **Malicious**.
 
 **Live demo:** [phishing-email-analyzer-xps9.onrender.com](https://phishing-email-analyzer-xps9.onrender.com/)
 
 > The free hosting tier sleeps after inactivity, so the first visit may take about a minute to load.
 
----
+## Verdicts
+
+| Score | Verdict |
+| --- | --- |
+| 0 | Benign |
+| 1 to 19 | Low Suspicion |
+| 20 to 49 | High Suspicion |
+| 50 to 100 | Malicious |
 
 ## Why I built it
 
-Phishing is one of the most common ways attackers get into organizations, and triaging reported emails is a core task for SOC analysts. I wanted to understand what an analyst actually looks at when deciding whether an email is malicious, then automate those checks so every verdict comes with clear evidence instead of a black-box answer.
+Phishing is still one of the easiest ways into a company, and sorting through reported emails is a big part of a SOC analyst's day. I wanted to understand what an analyst actually looks at when they decide an email is malicious, and then automate those checks.
 
-All detection logic is written by hand in Python. No AI or third-party detection API is involved, so every finding traces back to a specific, explainable rule.
+I also didn't want a black box. There's no AI and no third-party detection API here. All of the detection logic is hand-written Python, so every finding points back to a specific rule you can read and explain.
 
----
+## What it looks at
 
-## What it checks
+**The sender.** Is the email pretending to be a brand it isn't? It catches things like a "PayPal" display name on a random domain, lookalike domains (`paypa1`, `rnicrosoft`), company names sent from Gmail, and replies that quietly go to a different organization.
 
-### 1. Sender
-| Check | Example |
-|---|---|
-| Brand name in the display name, but the address isn't that brand's domain | `"PayPal Security" <service@paypa1-secure.com>` |
-| Lookalike domains, including swapped characters | `paypa1` (1 for l), `rnicrosoft` (rn for m), `docusign-review.net` |
-| A fake email address typed into the display name | `"security@paypal.com" <x@mailer.top>` |
-| A brand named in the subject, sent from a domain that isn't that brand | Subject `Your Netflix payment failed` from `billing@account-notice.com` |
-| A company name or executive title sent from a free webmail account | `"UPS Delivery" <ups.delivery@gmail.com>`, `"James Martin - CEO" <ceo.jmartin@gmail.com>` |
-| A sender domain with a high-risk ending | `alerts@secure-login.top` |
-| Reply-To or Return-Path belonging to a different organization | Sent from `paypa1-secure.com`, replies go to `protonmail-support.net` |
+**Authentication.** It reads the SPF, DKIM, and DMARC results your mail server recorded. In short, these tell you whether the email really came from the domain it claims to be from. A DMARC failure on a big brand is one of the strongest signs of spoofing. (More on these [below](#spf-dkim-and-dmarc-explained).)
 
-### 2. Authentication
-Reads the `Authentication-Results` header written by the receiving mail server and flags failures:
-- **SPF**: was the sending server authorized to send for this domain?
-- **DKIM**: is there a valid digital signature from the domain? If an email carries several signatures (e.g. the company's and its mailing service's), one valid signature is enough.
-- **DMARC**: does the visible From domain pass its owner's anti-spoofing policy? A domain with no DMARC policy at all is also noted.
+**The message itself.** It looks for the usual pressure tactics: urgency ("within 24 hours"), requests for passwords or personal info, gift card or wire transfer requests, "keep this between us", and generic greetings like "Dear Customer". It also flags emails with a login form built right into them, which real companies don't do.
 
-Only the **top** `Authentication-Results` header is trusted (see [Security considerations](#security-considerations)). If it's missing, the `Received-SPF` header is used as a fallback.
+**Links.** Every link gets pulled out and checked. Does the text say one thing while the link goes somewhere else? Is it a raw IP address, a URL shortener, a sketchy domain ending like `.xyz`, or a free hosting site where fake login pages usually live? It also catches older tricks like `paypal.com@evil.top`, which actually takes you to `evil.top`.
 
-### 3. Content
-- Urgent or threatening language (`"within 24 hours"`, `"account suspended"`, `"password will expire"`)
-- Requests for credentials or personal information (`"verify your identity"`, `"keep your password"`)
-- Unusual payment requests such as gift cards, wire transfers, crypto, or payroll / direct-deposit changes
-- Secrecy tactics that discourage verifying the request (`"keep this confidential"`)
-- Bait to click or open something, when two or more phrases appear (`"click here"`, `"view document"`, `"refund"`)
-- Generic greetings (`"Dear Customer"`, `"Hello user@example.com"`)
-- **Forms inside the email itself**, especially password boxes. Legitimate companies send you to their website to log in; they never ask you to type into the email.
+**Attachments.** Executables, scripts, macro-enabled Office files, HTML or SVG files (often fake login pages), double extensions like `invoice.pdf.exe`, and hidden characters that make a file name display backwards.
 
-Phrases are matched as whole words, so `"urgent"` doesn't match "insurgent". Text inside `<style>` and `<script>` tags is ignored, since the reader never sees it.
+## SPF, DKIM, and DMARC explained
 
-### 4. Links
-Links are extracted from the plain-text and HTML parts of the email (including bare `www.` links and form destinations), and each one is checked for:
-- Raw IP addresses instead of domain names, including disguised forms like `http://3119138835/`
-- **Visible link text that doesn't match the real destination**, e.g. text showing `paypal.com` while the link goes to `verify-login.xyz` (file names like `invoice.pdf` in link text are correctly ignored)
-- Lookalike or brand-impersonating domains
-- **Free hosting and form services** (`web.app`, `pages.dev`, `forms.gle`, ...), where most fake login pages are hosted today
-- `javascript:` and `data:` links, which run code instead of opening a website
-- High-risk top-level domains (`.xyz`, `.top`, `.click`, ...)
-- URL shorteners that hide the destination
-- The `@` trick (`http://paypal.com@evil.top` actually goes to `evil.top`)
-- Punycode domains that can disguise lookalike characters
-- Unencrypted `http` links
-- An email that asks you to log in or confirm details, but links to a different organization than the sender
+Email was designed in a time when everyone trusted each other, so by default anyone can put any address in the "From" line. Nothing stops a scammer from sending an email "from" `security@microsoft.com`. SPF, DKIM, and DMARC were added later to fix that. Here's what each one does, in plain terms:
 
-### 5. Attachments
-- Executables, scripts, and macro-enabled Office files (`.exe`, `.js`, `.docm`, `.lnk`, `.iso`, `.one`, ...)
-- HTML and SVG attachments, common ways to deliver fake login pages
-- Double extensions (`invoice.pdf.exe`)
-- Hidden right-to-left characters that make a file name display backwards (a file really named `inv[RLO]fdp.exe` displays as `invexe.pdf`)
-- Archives that can hide malware from email filters
+**SPF (Sender Policy Framework)** is a guest list. A domain like `microsoft.com` publishes a list of the mail servers that are allowed to send email for it. When an email arrives, the receiving server checks whether it came from a server on that list. If not, SPF fails.
 
----
+**DKIM (DomainKeys Identified Mail)** is a tamper-proof seal. The sending domain digitally signs the email, and the receiving server checks that signature using a public key the domain publishes. A valid signature proves the email really came from that domain and wasn't changed along the way.
 
-## How the scoring works
+**DMARC (Domain-based Message Authentication, Reporting and Conformance)** ties the other two to the name you actually see. SPF and DKIM can pass for *some* domain, like the scammer's own, while the From line says Microsoft. DMARC checks that SPF or DKIM passed for the same domain shown in the From address, and lets the domain owner say what to do with emails that don't match. A DMARC failure basically means "this email is claiming to be someone it isn't."
 
-Each red flag adds points weighted by how strongly it indicates phishing. For example, a DMARC failure adds 25 points, while an unencrypted link adds only 5. Repeated link problems are only counted once. The total is capped at 100.
+### How my code checks them
 
-| Score | Verdict | Meaning |
-|---|---|---|
-| 0 | Benign | No significant red flags detected. |
-| 1 – 19 | Low Suspicion | Minor phishing indicators detected. |
-| 20 – 49 | High Suspicion | Significant indicators of potential phishing. |
-| 50 – 100 | Malicious | Strong evidence of phishing or malicious intent. |
-
-The bar is set low on purpose. For a phishing tool, flagging a safe email costs a few seconds of double-checking, but calling a phishing email "benign" can cost someone their account.
-
-Findings are grouped by area (Sender, Authentication, Content, Links, Attachments) and shown as a score sheet: each one lists its severity, its points, and exactly what was found, with a running total at the bottom.
-
----
-
-## Tech stack
-
-- **Python 3** with the standard-library `email` package for parsing (headers, multipart bodies, attachments, encodings)
-- **Flask** for the web server
-- **HTML, CSS, and JavaScript** for the front end
-- **Gunicorn** and **Render** for deployment
-
----
-
-## Project structure
+The analyzer doesn't re-run these checks itself. Your mail provider (Gmail, Outlook, etc.) already ran them when the email arrived and wrote the results into a header that looks like this:
 
 ```
-phishing-email-analyzer/
-├── analyzer.py        # All detection logic: parsing, checks, scoring
-├── app.py             # Flask web server: serves the page, receives emails, returns JSON
-├── templates/
-│   └── index.html     # The web interface
-├── samples/           # Fake test emails (safe to share)
-└── requirements.txt
+Authentication-Results: mx.google.com;
+    spf=fail smtp.mailfrom=security-notice.invalid;
+    dkim=none;
+    dmarc=fail header.from=microsoft.com
 ```
 
-`analyzer.py` has no knowledge of the website, so the detection logic can be tested or reused on its own. `app.py` only handles web requests.
+`read_auth_results()` in `analyzer.py` finds that header and pulls out the word after `spf=`, `dkim=`, and `dmarc=` using regular expressions. A few details matter:
 
----
+- **Only the top header is trusted.** Every mail server that handles an email adds its header *above* the existing ones, so the top one always comes from your own provider. A scammer can type a fake `spf=pass dkim=pass dmarc=pass` header into the email before sending it, but it ends up lower down, so the code ignores it.
+- **One good DKIM signature is enough.** Some emails carry more than one signature (for example, one from the company and one from the service that sends their newsletters). If any of them passed, DKIM counts as passed.
+- **There's a fallback for SPF.** Some servers write the SPF result in a separate `Received-SPF` header instead, so the code checks there if it can't find SPF in the main one.
 
-## Run it locally
+Then `check_authentication()` turns those results into points:
 
-```bash
+- **SPF fail:** +20 (a "softfail", which is a weaker failure, adds +10)
+- **DKIM fail:** +15 (no signature at all, or another non-passing result, adds +5)
+- **DMARC fail:** +25, the biggest single red flag in this section
+- **No DMARC policy at all:** +5. It's not proof of anything, but it means nothing stops someone from faking that domain, and big brands always have one.
+- **No authentication header:** +5. This usually happens when someone pastes only part of an email, so the tool tells you to paste the full source.
+
+## How the score works
+
+Each red flag adds points based on how serious it is. A DMARC failure adds 25 points, while a plain `http` link only adds 5. The score is capped at 100, and the total maps to one of the four verdicts in the [table at the top](#verdicts).
+
+I set the bar low on purpose. If the tool flags a safe email, you lose a few seconds double-checking it. If it calls a phishing email safe, someone could lose their account.
+
+The results show every finding grouped by area, with how many points it added, so you can see exactly how the score was reached.
+
+## Built with
+
+Python 3 (using the built-in `email` library for parsing), Flask, plain HTML, CSS, and JavaScript, and Gunicorn on Render.
+
+`analyzer.py` holds all the detection logic and knows nothing about the website. `app.py` is just the web server that passes emails to it, and `templates/index.html` is the interface.
+
+## Run it yourself
+
+```
 git clone https://github.com/0xRizk/phishing-email-analyzer.git
 cd phishing-email-analyzer
 pip install -r requirements.txt
 python app.py
 ```
 
-Then open **http://127.0.0.1:5000**. On Windows, use `py` instead of `python` if needed.
+Then open http://127.0.0.1:5000. (On Windows, use `py` instead of `python` if `python` isn't recognized.)
 
-### Try the samples
+The `samples/` folder has eight fake emails to try: five phishing attempts (fake PayPal, Microsoft, DocuSign, Canada Post, and a CEO gift card scam), one borderline marketing email, and two legitimate ones. To test a real email from Gmail, open it, click ⋮ then **Download message**, and upload the file.
 
-The `samples/` folder contains fake emails covering different attack types:
+## Keeping it safe
 
-| File | Scenario | Expected verdict |
-|---|---|---|
-| `paypal_phish.eml` | Credential phishing with spoofed sender and disguised links | Malicious |
-| `microsoft_password_phish.eml` | Password-expiry lure using the `@` trick and punycode | Malicious |
-| `docusign_attachment_phish.eml` | Fake document with an HTML attachment | Malicious |
-| `canadapost_scam.eml` | Delivery fee scam with a shortened link | Malicious |
-| `ceo_giftcard_scam.eml` | CEO fraud asking for gift cards | Malicious |
-| `shopnow_suspicious.eml` | Pushy "reward" email with weak warning signs | High Suspicion |
-| `github_legit.eml` | Real-style security notification | Benign |
-| `spotify_legit.eml` | Real-style marketing email | Benign |
+A tool that reads phishing emails has to assume every email is hostile, so:
 
-To test a real email from Gmail: open it → **⋮** → **Download message**, then upload the `.eml` file.
+- Nothing from an email is ever rendered as HTML. It's all shown as plain text, so a malicious email can't run code in your browser.
+- Links are shown as text and are never clickable.
+- Fake authentication headers are ignored. Only the top one, added by your own mail server, is trusted (explained above).
+- Nothing is saved. Emails are analyzed in memory and thrown away.
+- Uploads over 10 MB are rejected, and errors never show internal details.
 
----
+## What it can't do (yet)
 
-## Security considerations
+This is a rule-based learning project, not a replacement for a real email security gateway. It needs the full email with headers to check authentication, it doesn't look up links or files against threat intelligence, and someone who avoids the usual phishing phrases can slip past the content checks. Because the scoring is strict, some legitimate marketing emails will show up as Low or High Suspicion.
 
-Because this tool handles hostile input by design, the app was built to treat every email as untrusted:
+Things I'd like to add next:
 
-- **No XSS from email content.** Everything taken from an email is inserted into the page as plain text, never as HTML, so a malicious email can't run scripts in the browser.
-- **Links are never clickable.** Extracted URLs are displayed as text only.
-- **Forged authentication headers are ignored.** Each mail server adds its `Authentication-Results` header above the existing ones, so only the top header comes from the user's own mail provider. An attacker can write a fake `spf=pass dkim=pass dmarc=pass` header into the email, so anything below the top one is never trusted.
-- **Nothing is stored.** Emails are analyzed in memory and discarded. Nothing is saved to disk or a database.
-- **Upload size limit.** Requests over 10 MB are rejected.
-- **No error leakage.** Unexpected errors return a generic message to the browser instead of internal details.
-
----
-
-## Limitations
-
-This is a rule-based educational tool, not a replacement for an enterprise email security gateway.
-
-- It relies on the `Authentication-Results` header added by the receiving server. If you paste only part of an email, SPF/DKIM/DMARC can't be checked.
-- It doesn't check links or attachments against threat intelligence feeds, and it never visits links or opens attachments.
-- Domains are compared using a built-in list of common two-part endings (`.co.uk`, `.com.au`, ...). Less common endings aren't covered without the full Public Suffix List.
-- Keyword-based content checks can be evaded by attackers who avoid common phrases. Because the scoring is deliberately strict, some legitimate emails (e.g. marketing mail without a DKIM signature) will show Low or High Suspicion.
-
-## Future improvements
-
-- Check URLs and file hashes against threat intelligence (e.g. VirusTotal, URLhaus)
-- Look up domain registration age, since newly registered domains are a strong phishing signal
-- Use the full Public Suffix List for accurate domain comparison
-- Add automated tests for every rule using the sample emails
-- Export results as a report for incident documentation
-
----
+- Checking links and file hashes against VirusTotal or URLhaus
+- Flagging newly registered domains
+- Automated tests for every rule
+- Exporting results as a report
 
 ## Author
 
-**Rizk Hyatt**
-[r1zk.com](https://r1zk.com) · [GitHub](https://github.com/0xRizk) · [LinkedIn](https://www.linkedin.com/in/rizk-hyatt-a740a4317/)
+Made by **Rizk Hyatt**: [r1zk.com](https://www.r1zk.com) · [GitHub](https://github.com/0xRizk) · [LinkedIn](https://www.linkedin.com/in/rizk-hyatt-a740a4317/)
